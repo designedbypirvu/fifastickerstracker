@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup 2026 Panini Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+
+        :root {
+            --bg-dark: #020617;
+            --accent-blue: #89CFF0;
+            --accent-navy: #1e3a8a;
+            --accent-glow: rgba(137, 207, 240, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(15, 23, 42, 0.5);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(20px);
+            --dupe-bg: #f97316;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Outfit", sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(30, 58, 138, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(137, 207, 240, 0.1), transparent 25%);
+        }
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            pointer-events: none;
+            animation: drift 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body::before {
+            width: 50vw;
+            height: 50vw;
+            background: rgba(30, 58, 138, 0.3);
+            top: -10vw;
+            left: -10vw;
+        }
+
+        body::after {
+            width: 40vw;
+            height: 40vw;
+            background: rgba(137, 207, 240, 0.15);
+            bottom: -5vw;
+            right: -5vw;
+            animation-delay: -10s;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(8vw, 8vw); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin: 6rem 0 5rem;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .we-are-26 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            border: 1px solid rgba(137, 207, 240, 0.2);
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, rgba(137, 207, 240, 0.05), rgba(30, 58, 138, 0.05));
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 5rem;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(137, 207, 240, 0.3);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 32px rgba(137, 207, 240, 0.1);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .stat-card:hover::before { opacity: 1; }
+
+        .stat-value {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.75rem;
+            color: #fff;
+            font-variant-numeric: tabular-nums;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+            margin-top: 2rem;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-navy), var(--accent-blue));
+            box-shadow: 0 0 16px var(--accent-blue);
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 3px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 4rem;
+            padding: 0.5rem;
+            background: var(--card-bg);
+            border-radius: 100px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 1rem 2.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .filter-btn:hover {
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: #fff;
+            color: var(--bg-dark);
+            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+        }
+
+        .team-section {
+            margin-bottom: 2rem;
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+        
+        .team-section:hover {
+            background: rgba(15, 23, 42, 0.5);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .team-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-stats {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            background: rgba(137, 207, 240, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            border: 1px solid rgba(137, 207, 240, 0.2);
+        }
+
+        .stickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sticker-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1.25rem;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 150px;
+            box-shadow: inset 0 0 0 transparent;
+        }
+
+        .sticker-card:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-6px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .sticker-card.collected {
+            background: linear-gradient(145deg, rgba(30, 58, 138, 0.3), rgba(15, 23, 42, 0.1));
+            border-color: rgba(137, 207, 240, 0.4);
+            box-shadow: inset 0 0 20px rgba(137, 207, 240, 0.05), 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .sticker-card.collected:hover {
+            box-shadow: inset 0 0 20px rgba(137, 207, 240, 0.1), 0 16px 32px rgba(0,0,0,0.4), 0 0 24px var(--accent-glow);
+            border-color: var(--accent-blue);
+        }
+
+        .sticker-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: #fff;
+            letter-spacing: -0.02em;
+        }
+
+        .sticker-status-icon {
+            font-size: 1.75rem;
+            color: var(--text-muted);
+            opacity: 0.3;
+            transition: all 0.4s ease;
+        }
+
+        .sticker-card.collected .sticker-status-icon {
+            color: var(--accent-blue);
+            opacity: 1;
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        .dupe-badge {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: var(--dupe-bg);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.5);
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dupe-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sticker-card:hover .dupe-controls,
+        .sticker-card.collected .dupe-controls {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dupe-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 1.2rem;
+        }
+
+        .dupe-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+            transform: scale(1.15) translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .export-bar {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--card-bg);
+            padding: 0.75rem;
+            border-radius: 100px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            animation: fadeDown 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .export-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 0.5rem;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translate(-50%, -30px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .export-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .export-btn i {
+            font-size: 1.2rem;
+        }
+
+        .export-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.25rem 2rem;
+            border-radius: 1.25rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transform: translateX(120%) scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #fff;
+        }
+
+        .toast.show {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 1024px) {
+            .stats-container { grid-template-columns: repeat(2, 1fr); }
+            h1 { font-size: 4rem; }
+            .team-title { font-size: 2rem; }
+            .stickers-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1.5rem 1rem; }
+            header { margin: 6rem 0 3rem; }
+            h1 { font-size: 3rem; }
+            .stats-container { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem; }
+            .export-bar {
+                top: auto;
+                bottom: 2rem;
+                padding: 0.5rem;
+                width: 90%;
+                justify-content: center;
+            }
+            .export-label {
+                display: none;
+            }
+            .export-btn { padding: 0.75rem 1rem; font-size: 0.85rem; }
+            .toast-container { bottom: 6rem; left: 1rem; right: 1rem; align-items: center; }
+            .toast { width: 100%; justify-content: center; transform: translateY(120%) scale(0.9); }
+            .toast.show { transform: translateY(0) scale(1); }
+            .filters { flex-wrap: wrap; width: 100%; border-radius: 1.5rem; padding: 1rem; }
+            .filter-btn { flex: 1; text-align: center; padding: 0.75rem; }
+            .team-section { padding: 1.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="export-bar">
+        <div class="export-label" style="padding-left: 1rem;"><i class="ri-folder-download-line"></i> Download</div>
+        <button class="export-btn missing-btn" onclick="exportMissing()" title="Export Missing Stickers">
+            <i class="ri-file-list-3-line"></i> Missing
+        </button>
+        <button class="export-btn dupes-btn" onclick="exportDuplicates()" title="Export Duplicate Stickers">
+            <i class="ri-file-copy-2-line"></i> Duplicates
+        </button>
+
+        <div class="export-divider"></div>
+
+        <div class="export-label"><i class="ri-database-2-line"></i> Data</div>
+        <button class="export-btn backup-btn" onclick="exportData()" title="Backup JSON Data">
+            <i class="ri-download-line"></i> Backup
+        </button>
+        <button class="export-btn" onclick="document.getElementById('importFile').click()" title="Import JSON Data">
+            <i class="ri-upload-line"></i> Import
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display: none" onchange="importData(event)">
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>FIFA World Cup 2026</h1>
+            <span class="we-are-26">OFFICIAL STICKER ALBUM</span>
+            <p style="color: var(--text-muted); font-size: 1.2rem;">Panini Sticker Tracker</p>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCollected">0</div>
+                <div class="stat-label">Collected</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="collectedProgress"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completionPercent">0%</div>
+                <div class="stat-label">Completion</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalMissing">0</div>
+                <div class="stat-label">Missing</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDupes">0</div>
+                <div class="stat-label">Duplicates</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="missing">Missing</button>
+            <button class="filter-btn" data-filter="dupes">Duplicates</button>
+        </div>
+
+        <div id="teamsContainer"></div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const stickersData = [{"team": "PANINI", "stickers": ["00"]}, {"team": "FWC", "stickers": ["FWC 1", "FWC 2", "FWC 3", "FWC 4", "FWC 5", "FWC 6", "FWC 7", "FWC 8", "FWC 9", "FWC 10", "FWC 11", "FWC 12", "FWC 13", "FWC 14", "FWC 15", "FWC 16", "FWC 17", "FWC 18", "FWC 19"]}, {"team": "MEXICO", "stickers": ["MEX 1", "MEX 2", "MEX 3", "MEX 4", "MEX 5", "MEX 6", "MEX 7", "MEX 8", "MEX 9", "MEX 10", "MEX 11", "MEX 12", "MEX 13", "MEX 14", "MEX 15", "MEX 16", "MEX 17", "MEX 18", "MEX 19", "MEX 20"]}, {"team": "SOUTH AFRICA", "stickers": ["RSA 1", "RSA 2", "RSA 3", "RSA 4", "RSA 5", "RSA 6", "RSA 7", "RSA 8", "RSA 9", "RSA 10", "RSA 11", "RSA 12", "RSA 13", "RSA 14", "RSA 15", "RSA 16", "RSA 17", "RSA 18", "RSA 19", "RSA 20"]}, {"team": "KOREA REPUBLIC", "stickers": ["KOR 1", "KOR 2", "KOR 3", "KOR 4", "KOR 5", "KOR 6", "KOR 7", "KOR 8", "KOR 9", "KOR 10", "KOR 11", "KOR 12", "KOR 13", "KOR 14", "KOR 15", "KOR 16", "KOR 17", "KOR 18", "KOR 19", "KOR 20"]}, {"team": "CZECHIA", "stickers": ["CZE 1", "CZE 2", "CZE 3", "CZE 4", "CZE 5", "CZE 6", "CZE 7", "CZE 8", "CZE 9", "CZE 10", "CZE 11", "CZE 12", "CZE 13", "CZE 14", "CZE 15", "CZE 16", "CZE 17", "CZE 18", "CZE 19", "CZE 20"]}, {"team": "CANADA", "stickers": ["CAN 1", "CAN 2", "CAN 3", "CAN 4", "CAN 5", "CAN 6", "CAN 7", "CAN 8", "CAN 9", "CAN 10", "CAN 11", "CAN 12", "CAN 13", "CAN 14", "CAN 15", "CAN 16", "CAN 17", "CAN 18", "CAN 19", "CAN 20"]}, {"team": "BOSNIA-\nHERZEGOVINA", "stickers": ["BIH 1", "BIH 2", "BIH 3", "BIH 4", "BIH 5", "BIH 6", "BIH 7", "BIH 8", "BIH 9", "BIH 10", "BIH 11", "BIH 12", "BIH 13", "BIH 14", "BIH 15", "BIH 16", "BIH 17", "BIH 18", "BIH 19", "BIH 20"]}, {"team": "QATAR", "stickers": ["QAT 1", "QAT 2", "QAT 3", "QAT 4", "QAT 5", "QAT 6", "QAT 7", "QAT 8", "QAT 9", "QAT 10", "QAT 11", "QAT 12", "QAT 13", "QAT 14", "QAT 15", "QAT 16", "QAT 17", "QAT 18", "QAT 19", "QAT 20"]}, {"team": "SWITZERLAND", "stickers": ["SUI 1", "SUI 2", "SUI 3", "SUI 4", "SUI 5", "SUI 6", "SUI 7", "SUI 8", "SUI 9", "SUI 10", "SUI 11", "SUI 12", "SUI 13", "SUI 14", "SUI 15", "SUI 16", "SUI 17", "SUI 18", "SUI 19", "SUI 20"]}, {"team": "BRAZIL", "stickers": ["BRA 1", "BRA 2", "BRA 3", "BRA 4", "BRA 5", "BRA 6", "BRA 7", "BRA 8", "BRA 9", "BRA 10", "BRA 11", "BRA 12", "BRA 13", "BRA 14", "BRA 15", "BRA 16", "BRA 17", "BRA 18", "BRA 19", "BRA 20"]}, {"team": "MOROCCO", "stickers": ["MAR 1", "MAR 2", "MAR 3", "MAR 4", "MAR 5", "MAR 6", "MAR 7", "MAR 8", "MAR 9", "MAR 10", "MAR 11", "MAR 12", "MAR 13", "MAR 14", "MAR 15", "MAR 16", "MAR 17", "MAR 18", "MAR 19", "MAR 20"]}, {"team": "HAITI", "stickers": ["HAI 1", "HAI 2", "HAI 3", "HAI 4", "HAI 5", "HAI 6", "HAI 7", "HAI 8", "HAI 9", "HAI 10", "HAI 11", "HAI 12", "HAI 13", "HAI 14", "HAI 15", "HAI 16", "HAI 17", "HAI 18", "HAI 19", "HAI 20"]}, {"team": "SCOTLAND", "stickers": ["SCO 1", "SCO 2", "SCO 3", "SCO 4", "SCO 5", "SCO 6", "SCO 7", "SCO 8", "SCO 9", "SCO 10", "SCO 11", "SCO 12", "SCO 13", "SCO 14", "SCO 15", "SCO 16", "SCO 17", "SCO 18", "SCO 19", "SCO 20"]}, {"team": "USA", "stickers": ["USA 1", "USA 2", "USA 3", "USA 4", "USA 5", "USA 6", "USA 7", "USA 8", "USA 9", "USA 10", "USA 11", "USA 12", "USA 13", "USA 14", "USA 15", "USA 16", "USA 17", "USA 18", "USA 19", "USA 20"]}, {"team": "PARAGUAY", "stickers": ["PAR 1", "PAR 2", "PAR 3", "PAR 4", "PAR 5", "PAR 6", "PAR 7", "PAR 8", "PAR 9", "PAR 10", "PAR 11", "PAR 12", "PAR 13", "PAR 14", "PAR 15", "PAR 16", "PAR 17", "PAR 18", "PAR 19", "PAR 20"]}, {"team": "AUSTRALIA", "stickers": ["AUS 1", "AUS 2", "AUS 3", "AUS 4", "AUS 5", "AUS 6", "AUS 7", "AUS 8", "AUS 9", "AUS 10", "AUS 11", "AUS 12", "AUS 13", "AUS 14", "AUS 15", "AUS 16", "AUS 17", "AUS 18", "AUS 19", "AUS 20"]}, {"team": "TURKEY", "stickers": ["TUR 1", "TUR 2", "TUR 3", "TUR 4", "TUR 5", "TUR 6", "TUR 7", "TUR 8", "TUR 9", "TUR 10", "TUR 11", "TUR 12", "TUR 13", "TUR 14", "TUR 15", "TUR 16", "TUR 17", "TUR 18", "TUR 19", "TUR 20"]}, {"team": "GERMANY", "stickers": ["GER 1", "GER 2", "GER 3", "GER 4", "GER 5", "GER 6", "GER 7", "GER 8", "GER 9", "GER 10", "GER 11", "GER 12", "GER 13", "GER 14", "GER 15", "GER 16", "GER 17", "GER 18", "GER 19", "GER 20"]}, {"team": "CURA\u00c7AO", "stickers": ["CUW 1", "CUW 2", "CUW 3", "CUW 4", "CUW 5", "CUW 6", "CUW 7", "CUW 8", "CUW 9", "CUW 10", "CUW 11", "CUW 12", "CUW 13", "CUW 14", "CUW 15", "CUW 16", "CUW 17", "CUW 18", "CUW 19", "CUW 20"]}, {"team": "C\u00d4TE D'IVOIRE", "stickers": ["CIV 1", "CIV 2", "CIV 3", "CIV 4", "CIV 5", "CIV 6", "CIV 7", "CIV 8", "CIV 9", "CIV 10", "CIV 11", "CIV 12", "CIV 13", "CIV 14", "CIV 15", "CIV 16", "CIV 17", "CIV 18", "CIV 19", "CIV 20"]}, {"team": "ECUADOR", "stickers": ["ECU 1", "ECU 2", "ECU 3", "ECU 4", "ECU 5", "ECU 6", "ECU 7", "ECU 8", "ECU 9", "ECU 10", "ECU 11", "ECU 12", "ECU 13", "ECU 14", "ECU 15", "ECU 16", "ECU 17", "ECU 18", "ECU 19", "ECU 20"]}, {"team": "NETHERLANDS", "stickers": ["NED 1", "NED 2", "NED 3", "NED 4", "NED 5", "NED 6", "NED 7", "NED 8", "NED 9", "NED 10", "NED 11", "NED 12", "NED 13", "NED 14", "NED 15", "NED 16", "NED 17", "NED 18", "NED 19", "NED 20"]}, {"team": "JAPAN", "stickers": ["JPN 1", "JPN 2", "JPN 3", "JPN 4", "JPN 5", "JPN 6", "JPN 7", "JPN 8", "JPN 9", "JPN 10", "JPN 11", "JPN 12", "JPN 13", "JPN 14", "JPN 15", "JPN 16", "JPN 17", "JPN 18", "JPN 19", "JPN 20"]}, {"team": "SWEDEN", "stickers": ["SWE 1", "SWE 2", "SWE 3", "SWE 4", "SWE 5", "SWE 6", "SWE 7", "SWE 8", "SWE 9", "SWE 10", "SWE 11", "SWE 12", "SWE 13", "SWE 14", "SWE 15", "SWE 16", "SWE 17", "SWE 18", "SWE 19", "SWE 20"]}, {"team": "TUNISIA", "stickers": ["TUN 1", "TUN 2", "TUN 3", "TUN 4", "TUN 5", "TUN 6", "TUN 7", "TUN 8", "TUN 9", "TUN 10", "TUN 11", "TUN 12", "TUN 13", "TUN 14", "TUN 15", "TUN 16", "TUN 17", "TUN 18", "TUN 19", "TUN 20"]}, {"team": "BELGIUM", "stickers": ["BEL 1", "BEL 2", "BEL 3", "BEL 4", "BEL 5", "BEL 6", "BEL 7", "BEL 8", "BEL 9", "BEL 10", "BEL 11", "BEL 12", "BEL 13", "BEL 14", "BEL 15", "BEL 16", "BEL 17", "BEL 18", "BEL 19", "BEL 20"]}, {"team": "EGYPT", "stickers": ["EGY 1", "EGY 2", "EGY 3", "EGY 4", "EGY 5", "EGY 6", "EGY 7", "EGY 8", "EGY 9", "EGY 10", "EGY 11", "EGY 12", "EGY 13", "EGY 14", "EGY 15", "EGY 16", "EGY 17", "EGY 18", "EGY 19", "EGY 20"]}, {"team": "IRAN", "stickers": ["IRN 1", "IRN 2", "IRN 3", "IRN 4", "IRN 5", "IRN 6", "IRN 7", "IRN 8", "IRN 9", "IRN 10", "IRN 11", "IRN 12", "IRN 13", "IRN 14", "IRN 15", "IRN 16", "IRN 17", "IRN 18", "IRN 19", "IRN 20"]}, {"team": "NEW ZEALAND", "stickers": ["NZL 1", "NZL 2", "NZL 3", "NZL 4", "NZL 5", "NZL 6", "NZL 7", "NZL 8", "NZL 9", "NZL 10", "NZL 11", "NZL 12", "NZL 13", "NZL 14", "NZL 15", "NZL 16", "NZL 17", "NZL 18", "NZL 19", "NZL 20"]}, {"team": "SPAIN", "stickers": ["ESP 1", "ESP 2", "ESP 3", "ESP 4", "ESP 5", "ESP 6", "ESP 7", "ESP 8", "ESP 9", "ESP 10", "ESP 11", "ESP 12", "ESP 13", "ESP 14", "ESP 15", "ESP 16", "ESP 17", "ESP 18", "ESP 19", "ESP 20"]}, {"team": "CABO VERDE", "stickers": ["CPV 1", "CPV 2", "CPV 3", "CPV 4", "CPV 5", "CPV 6", "CPV 7", "CPV 8", "CPV 9", "CPV 10", "CPV 11", "CPV 12", "CPV 13", "CPV 14", "CPV 15", "CPV 16", "CPV 17", "CPV 18", "CPV 19", "CPV 20"]}, {"team": "SAUDI ARABIA", "stickers": ["KSA 1", "KSA 2", "KSA 3", "KSA 4", "KSA 5", "KSA 6", "KSA 7", "KSA 8", "KSA 9", "KSA 10", "KSA 11", "KSA 12", "KSA 13", "KSA 14", "KSA 15", "KSA 16", "KSA 17", "KSA 18", "KSA 19", "KSA 20"]}, {"team": "URUGUAY", "stickers": ["URU 1", "URU 2", "URU 3", "URU 4", "URU 5", "URU 6", "URU 7", "URU 8", "URU 9", "URU 10", "URU 11", "URU 12", "URU 13", "URU 14", "URU 15", "URU 16", "URU 17", "URU 18", "URU 19", "URU 20"]}, {"team": "FRANCE", "stickers": ["FRA 1", "FRA 2", "FRA 3", "FRA 4", "FRA 5", "FRA 6", "FRA 7", "FRA 8", "FRA 9", "FRA 10", "FRA 11", "FRA 12", "FRA 13", "FRA 14", "FRA 15", "FRA 16", "FRA 17", "FRA 18", "FRA 19", "FRA 20"]}, {"team": "SENEGAL", "stickers": ["SEN 1", "SEN 2", "SEN 3", "SEN 4", "SEN 5", "SEN 6", "SEN 7", "SEN 8", "SEN 9", "SEN 10", "SEN 11", "SEN 12", "SEN 13", "SEN 14", "SEN 15", "SEN 16", "SEN 17", "SEN 18", "SEN 19", "SEN 20"]}, {"team": "IRAQ", "stickers": ["IRQ 1", "IRQ 2", "IRQ 3", "IRQ 4", "IRQ 5", "IRQ 6", "IRQ 7", "IRQ 8", "IRQ 9", "IRQ 10", "IRQ 11", "IRQ 12", "IRQ 13", "IRQ 14", "IRQ 15", "IRQ 16", "IRQ 17", "IRQ 18", "IRQ 19", "IRQ 20"]}, {"team": "NORWAY", "stickers": ["NOR 1", "NOR 2", "NOR 3", "NOR 4", "NOR 5", "NOR 6", "NOR 7", "NOR 8", "NOR 9", "NOR 10", "NOR 11", "NOR 12", "NOR 13", "NOR 14", "NOR 15", "NOR 16", "NOR 17", "NOR 18", "NOR 19", "NOR 20"]}, {"team": "ARGENTINA", "stickers": ["ARG 1", "ARG 2", "ARG 3", "ARG 4", "ARG 5", "ARG 6", "ARG 7", "ARG 8", "ARG 9", "ARG 10", "ARG 11", "ARG 12", "ARG 13", "ARG 14", "ARG 15", "ARG 16", "ARG 17", "ARG 18", "ARG 19", "ARG 20"]}, {"team": "ALGERIA", "stickers": ["ALG 1", "ALG 2", "ALG 3", "ALG 4", "ALG 5", "ALG 6", "ALG 7", "ALG 8", "ALG 9", "ALG 10", "ALG 11", "ALG 12", "ALG 13", "ALG 14", "ALG 15", "ALG 16", "ALG 17", "ALG 18", "ALG 19", "ALG 20"]}, {"team": "AUSTRIA", "stickers": ["AUT 1", "AUT 2", "AUT 3", "AUT 4", "AUT 5", "AUT 6", "AUT 7", "AUT 8", "AUT 9", "AUT 10", "AUT 11", "AUT 12", "AUT 13", "AUT 14", "AUT 15", "AUT 16", "AUT 17", "AUT 18", "AUT 19", "AUT 20"]}, {"team": "JORDAN", "stickers": ["JOR 1", "JOR 2", "JOR 3", "JOR 4", "JOR 5", "JOR 6", "JOR 7", "JOR 8", "JOR 9", "JOR 10", "JOR 11", "JOR 12", "JOR 13", "JOR 14", "JOR 15", "JOR 16", "JOR 17", "JOR 18", "JOR 19", "JOR 20"]}, {"team": "POTRUGAL", "stickers": ["POR 1", "POR 2", "POR 3", "POR 4", "POR 5", "POR 6", "POR 7", "POR 8", "POR 9", "POR 10", "POR 11", "POR 12", "POR 13", "POR 14", "POR 15", "POR 16", "POR 17", "POR 18", "POR 19", "POR 20"]}, {"team": "CONGO DR", "stickers": ["COD 1", "COD 2", "COD 3", "COD 4", "COD 5", "COD 6", "COD 7", "COD 8", "COD 9", "COD 10", "COD 11", "COD 12", "COD 13", "COD 14", "COD 15", "COD 16", "COD 17", "COD 18", "COD 19", "COD 20"]}, {"team": "UZBEKISTAN", "stickers": ["UZB 1", "UZB 2", "UZB 3", "UZB 4", "UZB 5", "UZB 6", "UZB 7", "UZB 8", "UZB 9", "UZB 10", "UZB 11", "UZB 12", "UZB 13", "UZB 14", "UZB 15", "UZB 16", "UZB 17", "UZB 18", "UZB 19", "UZB 20"]}, {"team": "COLOMBIA", "stickers": ["COL 1", "COL 2", "COL 3", "COL 4", "COL 5", "COL 6", "COL 7", "COL 8", "COL 9", "COL 10", "COL 11", "COL 12", "COL 13", "COL 14", "COL 15", "COL 16", "COL 17", "COL 18", "COL 19", "COL 20"]}, {"team": "ENGLAND", "stickers": ["ENG 1", "ENG 2", "ENG 3", "ENG 4", "ENG 5", "ENG 6", "ENG 7", "ENG 8", "ENG 9", "ENG 10", "ENG 11", "ENG 12", "ENG 13", "ENG 14", "ENG 15", "ENG 16", "ENG 17", "ENG 18", "ENG 19", "ENG 20"]}, {"team": "CROATIA", "stickers": ["CRO 1", "CRO 2", "CRO 3", "CRO 4", "CRO 5", "CRO 6", "CRO 7", "CRO 8", "CRO 9", "CRO 10", "CRO 11", "CRO 12", "CRO 13", "CRO 14", "CRO 15", "CRO 16", "CRO 17", "CRO 18", "CRO 19", "CRO 20"]}, {"team": "GHANA", "stickers": ["GHA 1", "GHA 2", "GHA 3", "GHA 4", "GHA 5", "GHA 6", "GHA 7", "GHA 8", "GHA 9", "GHA 10", "GHA 11", "GHA 12", "GHA 13", "GHA 14", "GHA 15", "GHA 16", "GHA 17", "GHA 18", "GHA 19", "GHA 20"]}, {"team": "PANAMA", "stickers": ["PAN 1", "PAN 2", "PAN 3", "PAN 4", "PAN 5", "PAN 6", "PAN 7", "PAN 8", "PAN 9", "PAN 10", "PAN 11", "PAN 12", "PAN 13", "PAN 14", "PAN 15", "PAN 16", "PAN 17", "PAN 18", "PAN 19", "PAN 20"]}];
+        
+        // State
+        // state = { "FWC 1": { collected: true, dupes: 0 }, ... }
+        let userState = JSON.parse(localStorage.getItem("panini2026State")) || {};
+        let currentFilter = "all"; // all, missing, dupes
+        let totalStickers = 0;
+        
+        // Initialize
+        function init() {
+            totalStickers = stickersData.reduce((acc, team) => acc + team.stickers.length, 0);
+            renderTeams();
+            updateStats();
+            setupFilters();
+        }
+        
+        function saveState() {
+            localStorage.setItem("panini2026State", JSON.stringify(userState));
+            updateStats();
+        }
+        
+        function toggleCollected(id, e) {
+            // prevent toggle if clicking dupe buttons
+            if(e && e.target.closest('.dupe-btn')) return;
+            
+            if (!userState[id]) {
+                userState[id] = { collected: true, dupes: 0 };
+                showToast(`Collected ${id}!`, "ri-check-line", "#89CFF0");
+            } else if (userState[id].collected && userState[id].dupes === 0) {
+                delete userState[id]; // completely remove
+            } else if (userState[id].collected && userState[id].dupes > 0) {
+                 // if they uncheck but have dupes, maybe just keep collected but warn?
+                 // Or just remove collected but keep dupes? Usually you cant have dupes if not collected.
+                 delete userState[id];
+            }
+            
+            saveState();
+            renderTeam(getStickerTeam(id));
+        }
+        
+        function updateDupe(id, change, e) {
+            e.stopPropagation(); // prevent card click
+            
+            if (!userState[id]) {
+                userState[id] = { collected: true, dupes: 0 };
+            }
+            
+            let newDupes = (userState[id].dupes || 0) + change;
+            if (newDupes < 0) newDupes = 0;
+            
+            userState[id].dupes = newDupes;
+            userState[id].collected = true; // MUST be collected to have dupes
+            
+            if (change > 0) {
+                showToast(`Added duplicate for ${id}`, "ri-file-copy-line", "#ff8c32");
+            }
+            
+            saveState();
+            renderTeam(getStickerTeam(id));
+        }
+        
+        function getStickerTeam(id) {
+            for(let t of stickersData) {
+                if(t.stickers.includes(id)) return t.team;
+            }
+            return null;
+        }
+        
+        function updateStats() {
+            let collectedCount = 0;
+            let dupesCount = 0;
+            
+            for (let id in userState) {
+                if (userState[id].collected) collectedCount++;
+                if (userState[id].dupes) dupesCount += userState[id].dupes;
+            }
+            
+            const percent = ((collectedCount / totalStickers) * 100).toFixed(1);
+            
+            const missingCount = totalStickers - collectedCount;
+            
+            document.getElementById('totalCollected').innerText = `${collectedCount} / ${totalStickers}`;
+            document.getElementById('completionPercent').innerText = `${percent}%`;
+            document.getElementById('collectedProgress').style.width = `${percent}%`;
+            document.getElementById('totalMissing').innerText = missingCount;
+            document.getElementById('totalDupes').innerText = dupesCount;
+            
+            // update individual team stats
+            stickersData.forEach(team => {
+                let teamColl = 0;
+                team.stickers.forEach(s => {
+                    if(userState[s] && userState[s].collected) teamColl++;
+                });
+                const el = document.getElementById(`stat-${team.team.replace(/\s+/g, '-')}`);
+                if(el) el.innerText = `${teamColl}/${team.stickers.length}`;
+            });
+        }
+        
+        function renderTeams() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = '';
+            
+            stickersData.forEach(team => {
+                const teamId = team.team.replace(/\s+/g, '-');
+                
+                const section = document.createElement('div');
+                section.className = 'team-section';
+                section.id = `section-${teamId}`;
+                
+                section.innerHTML = `
+                    <div class="team-header" onclick="toggleTeam('${teamId}')">
+                        <div class="team-title">
+                            ${team.team}
+                        </div>
+                        <div class="team-stats" id="stat-${teamId}">
+                            0/${team.stickers.length}
+                        </div>
+                    </div>
+                    <div class="stickers-grid" id="grid-${teamId}"></div>
+                `;
+                
+                container.appendChild(section);
+                renderTeam(team.team);
+            });
+        }
+        
+        function renderTeam(teamName) {
+            const team = stickersData.find(t => t.team === teamName);
+            if(!team) return;
+            
+            const teamId = teamName.replace(/\s+/g, '-');
+            const grid = document.getElementById(`grid-${teamId}`);
+            if(!grid) return;
+            
+            grid.innerHTML = '';
+            
+            let visibleCount = 0;
+            
+            team.stickers.forEach(sticker => {
+                const state = userState[sticker] || { collected: false, dupes: 0 };
+                
+                // Filtering
+                if (currentFilter === 'missing' && state.collected) return;
+                if (currentFilter === 'dupes' && state.dupes === 0) return;
+                
+                visibleCount++;
+                
+                const card = document.createElement('div');
+                card.className = `sticker-card ${state.collected ? 'collected' : ''}`;
+                card.onclick = (e) => toggleCollected(sticker, e);
+                
+                let dupeBadge = state.dupes > 0 ? `<div class="dupe-badge">${state.dupes}</div>` : '';
+                
+                let icon = state.collected ? '<i class="ri-checkbox-circle-fill sticker-status-icon"></i>' : '<i class="ri-checkbox-blank-circle-line sticker-status-icon"></i>';
+                
+                card.innerHTML = `
+                    ${dupeBadge}
+                    <div class="sticker-number">${sticker}</div>
+                    ${icon}
+                    <div class="dupe-controls">
+                        <button class="dupe-btn" onclick="updateDupe('${sticker}', -1, event)"><i class="ri-subtract-line"></i></button>
+                        <button class="dupe-btn" onclick="updateDupe('${sticker}', 1, event)"><i class="ri-add-line"></i></button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            const section = document.getElementById(`section-${teamId}`);
+            if (visibleCount === 0 && currentFilter !== 'all') {
+                section.classList.add('hidden');
+            } else {
+                section.classList.remove('hidden');
+            }
+        }
+        
+        function toggleTeam(teamId) {
+            const grid = document.getElementById(`grid-${teamId}`);
+            if(grid.style.display === 'none') {
+                grid.style.display = 'grid';
+            } else {
+                grid.style.display = 'none';
+            }
+        }
+        
+        function setupFilters() {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentFilter = e.target.dataset.filter;
+                    
+                    // Re-render all teams to apply filter
+                    stickersData.forEach(team => renderTeam(team.team));
+                });
+            });
+        }
+        
+        function showToast(message, iconClass, color) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="${iconClass}" style="color: ${color}; font-size: 1.2rem;"></i> ${message}`;
+            
+            container.appendChild(toast);
+            
+            // trigger reflow
+            void toast.offsetWidth;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userState, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href",     dataStr     );
+            dlAnchorElem.setAttribute("download", "panini_2026_backup.json");
+            dlAnchorElem.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (typeof importedData === 'object' && importedData !== null) {
+                        userState = importedData;
+                        saveState();
+                        stickersData.forEach(team => renderTeam(team.team));
+                        showToast('Backup restored successfully!', 'ri-checkbox-circle-fill', '#89CFF0');
+                    }
+                } catch (error) {
+                    showToast('Invalid backup file!', 'ri-error-warning-line', '#ff8c32');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function exportMissing() {
+            const lines = [];
+            stickersData.forEach(team => {
+                const missing = team.stickers.filter(s => !userState[s] || !userState[s].collected);
+                if (missing.length > 0) {
+                    const codes = missing.map(s => s.replace(/^\S+\s/, '')).join(', ');
+                    const teamName = team.team.replace(/\n/g, ' ');
+                    lines.push(`${teamName}: ${codes}`);
+                }
+            });
+            if (lines.length === 0) {
+                showToast('No missing stickers!', 'ri-trophy-line', '#89CFF0');
+                return;
+            }
+            const txt = lines.join('\n');
+            downloadTxt(txt, 'panini_2026_missing.txt');
+            showToast(`Exported ${lines.length} teams with missing stickers`, 'ri-file-list-3-line', '#89CFF0');
+        }
+
+        function exportDuplicates() {
+            const lines = [];
+            stickersData.forEach(team => {
+                const dupes = [];
+                team.stickers.forEach(s => {
+                    if (userState[s] && userState[s].dupes > 0) {
+                        const code = s.replace(/^\S+\s/, '');
+                        dupes.push(userState[s].dupes > 1 ? `${code} (x${userState[s].dupes})` : code);
+                    }
+                });
+                if (dupes.length > 0) {
+                    const teamName = team.team.replace(/\n/g, ' ');
+                    lines.push(`${teamName}: ${dupes.join(', ')}`);
+                }
+            });
+            if (lines.length === 0) {
+                showToast('No duplicate stickers!', 'ri-information-line', '#ff8c32');
+                return;
+            }
+            const txt = lines.join('\n');
+            downloadTxt(txt, 'panini_2026_duplicates.txt');
+            showToast(`Exported ${lines.length} teams with duplicates`, 'ri-file-copy-2-line', '#ff8c32');
+        }
+
+        function downloadTxt(content, filename) {
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Run
+        init();
+    </script>
+</body>
+</html>
