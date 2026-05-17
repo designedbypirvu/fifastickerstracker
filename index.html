@@ -180,6 +180,7 @@
             position: relative;
             z-index: 1;
             text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
         .stat-label {
@@ -536,23 +537,148 @@
             .stickers-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
         }
 
+        /* Mobile menu toggle button */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 200;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            color: var(--text-main);
+            font-size: 1.4rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(137, 207, 240, 0.3);
+            transform: scale(1.08);
+        }
+
+        .mobile-menu-toggle .menu-icon { display: block; }
+        .mobile-menu-toggle .close-icon { display: none; }
+        .mobile-menu-toggle.open .menu-icon { display: none; }
+        .mobile-menu-toggle.open .close-icon { display: block; }
+
+        /* Mobile menu panel */
+        .mobile-menu-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 150;
+            width: 260px;
+            height: auto;
+            max-height: 100vh;
+            padding: 5rem 1.5rem 2rem;
+            background: rgba(8, 15, 30, 0.95);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border-left: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            border-radius: 0 0 0 1.5rem;
+            box-shadow: -8px 0 48px rgba(0,0,0,0.5);
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-panel .menu-group-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0.75rem 0.5rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mobile-menu-panel .menu-group-label:not(:first-child) {
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+        }
+
+        .mobile-menu-panel .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 0.75rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .mobile-menu-panel .menu-btn:hover,
+        .mobile-menu-panel .menu-btn:active {
+            background: rgba(137, 207, 240, 0.1);
+            border-color: rgba(137, 207, 240, 0.25);
+        }
+
+        .mobile-menu-panel .menu-btn i {
+            font-size: 1.15rem;
+            color: var(--accent-blue);
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        /* Overlay behind menu */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 140;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.open {
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             body { padding: 1.5rem 1rem; }
-            header { margin: 6rem 0 3rem; }
+            header { margin: 4rem 0 3rem; }
             h1 { font-size: 3rem; }
             .stats-container { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem; }
             .export-bar {
-                top: auto;
-                bottom: 2rem;
-                padding: 0.5rem;
-                width: 90%;
-                justify-content: center;
+                display: none !important;
             }
-            .export-label {
-                display: none;
+            .mobile-menu-toggle {
+                display: flex;
             }
-            .export-btn { padding: 0.75rem 1rem; font-size: 0.85rem; }
-            .toast-container { bottom: 6rem; left: 1rem; right: 1rem; align-items: center; }
+            .mobile-menu-panel {
+                display: flex;
+            }
+            .mobile-menu-overlay {
+                display: block;
+            }
+            .toast-container { bottom: 2rem; left: 1rem; right: 1rem; align-items: center; }
             .toast { width: 100%; justify-content: center; transform: translateY(120%) scale(0.9); }
             .toast.show { transform: translateY(0) scale(1); }
             .filters { flex-wrap: wrap; width: 100%; border-radius: 1.5rem; padding: 1rem; }
@@ -564,6 +690,7 @@
 </head>
 <body>
 
+    <!-- Desktop export bar -->
     <div class="export-bar">
         <div class="export-label" style="padding-left: 1rem;"><i class="ri-folder-download-line"></i> Download</div>
         <button class="export-btn missing-btn" onclick="exportMissing()" title="Export Missing Stickers">
@@ -583,6 +710,29 @@
             <i class="ri-upload-line"></i> Import
         </button>
         <input type="file" id="importFile" accept=".json" style="display: none" onchange="importData(event)">
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
+        <i class="ri-menu-3-line menu-icon"></i>
+        <i class="ri-close-line close-icon"></i>
+    </button>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="menu-group-label"><i class="ri-folder-download-line"></i> Download</div>
+        <button class="menu-btn" onclick="exportMissing(); closeMobileMenu();">
+            <i class="ri-file-list-3-line"></i> Export Missing
+        </button>
+        <button class="menu-btn" onclick="exportDuplicates(); closeMobileMenu();">
+            <i class="ri-file-copy-2-line"></i> Export Duplicates
+        </button>
+        <div class="menu-group-label"><i class="ri-database-2-line"></i> Data</div>
+        <button class="menu-btn" onclick="exportData(); closeMobileMenu();">
+            <i class="ri-download-line"></i> Backup Data
+        </button>
+        <button class="menu-btn" onclick="document.getElementById('importFile').click(); closeMobileMenu();">
+            <i class="ri-upload-line"></i> Import Data
+        </button>
     </div>
 
     <div class="container">
@@ -926,6 +1076,27 @@
             URL.revokeObjectURL(url);
         }
         
+        // Mobile menu
+        function toggleMobileMenu() {
+            const toggle = document.getElementById('mobileMenuToggle');
+            const panel = document.getElementById('mobileMenuPanel');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const isOpen = panel.classList.contains('open');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                toggle.classList.add('open');
+                panel.classList.add('open');
+                overlay.classList.add('open');
+            }
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('mobileMenuToggle').classList.remove('open');
+            document.getElementById('mobileMenuPanel').classList.remove('open');
+            document.getElementById('mobileMenuOverlay').classList.remove('open');
+        }
+
         // Run
         init();
     </script>
